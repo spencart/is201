@@ -1,10 +1,87 @@
+/* --- GLOBAL STYLES (from your original definitions) --- */
 body{
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background-color: rgba(245, 245, 220, 0.71);
+    background-color: rgba(245, 245, 220, 0.71); /* Beige/Cream background */
+    color: black;
 }
 h1, h2, h3, h4, h5, h6, p{
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 a{
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: black; 
+}
+
+/* --- FIX: HEADER CONTACT INFO (FORCED ONE-LINE) --- */
+/* This targets the contact info line (the .subheading) in the masthead header */
+.site-heading .subheading {
+    white-space: nowrap !important;
+    font-size: 1.15rem !important; /* Adjust font to help content fit */
+}
+
+/* --- CONTENT BLOCK STYLES (Your custom named classes) --- */
+.content-box { /* Corrected selector for the anonymous block */
+    border: 1px solid #e0ee0e; 
+    padding: 25px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    background-color: whitesmoke;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: #f8f8f8; 
+    color: #6c757d;           
+    font-size: 0.85rem;       
+    border-top: 1px solid #e9e9e9;
+}
+
+.genre-list { /* Corrected selector for the anonymous list block */
+    list-style-type: square; 
+    line-height: 1.6;        
+    color: #495057;          
+    margin-left: 20px;
+}
+
+blockquote {
+    border-left: 4px solid #cccccc; 
+    padding: 10px 20px;           
+    margin: 20px 0;                 
+    font-style: italic;             
+    color: #6c757d;
+}
+
+/* --- TIGHTER SPACING STYLES (from previous discussion on scratch.html) --- */
+
+/* Targets the text/list block in the main container (e.g., .post-preview) */
+.container .post-preview { 
+    margin-top: 10px !important;    
+    margin-bottom: 20px !important; 
+    padding-bottom: 0 !important;   
+}
+
+/* Targets the video section (e.g., .media-section) */
+.scratch-content .media-section { 
+    margin-top: 20px !important;    
+    margin-bottom: 20px !important; 
+    padding-top: 0 !important;      
+    padding-bottom: 0 !important;   
+}
+
+/* Targets the visualization section (e.g., .data-section) */
+.scratch-content .data-section { 
+    margin-top: 20px !important;    
+    margin-bottom: 40px !important; 
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Targets section titles in the scratch area */
+.page-title-scratch { /* Corrected selector for the anonymous block */
+    margin-bottom: 10px !important; 
+}
+
+/* Corrected selector for the anonymous block near the end of your original mystyles */
+.my-4 { 
+    border-top: 1px solid #cccccc; /* Slightly darker than the border above */
 }

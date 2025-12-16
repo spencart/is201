@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Bad Bunney Beach Run</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/mystyles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <!-- <a class="navbar-brand" href="index.html">Start Bootstrap</a> -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="game.html">Game</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="resume.html">Resume</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="scratch.html">Scratch</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Bad Bunny Beach Runner</title>
+<style>
+    /* Import a pixel font for a better retro feel */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    body {
+        margin: 0;
+        overflow: hidden;
+        font-family: 'Press Start 2P', cursive, Arial, sans-serif;
+        
+        /* Centering the game container */
+        display: flex; 
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #5d9ee0; /* A nice ocean blue outside the canvas */
+    }
+
+    /* Wrapper for easy centering */
+    #gameContainer {
+        position: relative; /* Needed for the start screen/score overlay */
+    }
+
+    #gameCanvas {
+        display: block;
+        border: 8px solid #333;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    #startScreen {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+        z-index: 10;
+        text-align: center;
+        font-family: 'Press Start 2P', cursive, Arial, sans-serif;
+    }
+    #startScreen h1 {
+        color: #ff4081; /* Bad Bunny Pink/Red */
+        margin-bottom: 5px;
+        font-size: 32px;
+    }
+    #startButton {
+        padding: 15px 30px;
+        font-size: 18px;
+        margin-top: 30px;
+        cursor: pointer;
+        background: #ff4081;
+        border: 4px solid #fff;
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 5px #a12a52;
+        transition: all 0.1s;
+        font-family: 'Press Start 2P', cursive, Arial, sans-serif;
+    }
+    #startButton:active {
+        box-shadow: 0 2px #a12a52;
+        transform: translateY(3px);
+    }
+    #scoreDisplay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+        font-size: 14px;
+        text-shadow: 2px 2px #000;
+        font-family: 'Press Start 2P', cursive, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+
+<div id="gameContainer">
+    <div id="startScreen">
+        <h1>BAD BUNNY BEACH RUN</h1>
+        <div style="width:80%; line-height:1.6; font-size:14px; margin-bottom: 20px;">
+            Run as long as you can while dodging the obstacles! 
+            <br>Use UP ARROW or SPACE to jump. 
+            <br>Use DOWN ARROW to duck.
+            <br><br>Current High Score: 0<br><br>¡Suerte!
+        </div>
+        <button id="startButton">¡Empezar!</button>
+    </div>
+
+    <canvas id="gameCanvas" width="900" height="300"></canvas>
+</div>
+
+<script>
+// ----------------------------
+// CONFIGURATION
+// ----------------------------
+const CANVAS_W = 900;
+const CANVAS_H = 300;
+const GROUND_Y = CANVAS_H - 20; // Y position of the ground line
+
+// ----------------------------
+// CANVAS SETUP
+// ----------------------------
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = CANVAS_W;
+canvas.height = CANVAS_H;
+ctx.imageSmoothingEnabled = false; // Essential for a crisp pixel look
+
+// ----------------------------
+// PLAYER CONFIG 
+// ----------------------------
+const PLAYER_STAND = { w: 40, h: 55 };
+const PLAYER_DUCK  = { w: 40, h: 35 };
+const PLAYER_RUN_SPRITES = [
+    { hat: "#333", shirt: "#ff4444" },
+    { hat: "#ff4081", shirt: "#333" } 
+];
+let currentRunFrame = 0;
+
+let player = {
+    x: 80,
+    y: GROUND_Y - PLAYER_STAND.h,
+    w: PLAYER_STAND.w,
+    h: PLAYER_STAND.h,
+    vy: 0,
+    gravity: 0.8,
+    grounded: true,
+    jumpForce: -14,
+    ducking: false,
+    frameCounter: 0
+};
+
+// ----------------------------
+// GAME VARS
+// ----------------------------
+let obstacles = [];
+let speed = 6;
+let score = 0;
+let highScore = Number(localStorage.getItem("bb_highscore")) || 0;
+let gameRunning = false;
+let obstacleTimer = 0;
+let nextDouble = false; // NEW: Flag to force a second quick obstacle
+
+// ----------------------------
+// PARALLAX BACKGROUND DATA
+// ----------------------------
+const COLORS = {
+    sky: "#87d3ff",
+    water: "#1fa4ff",
+    sand: "#f7d59c",
+    treeTrunk: "#a57d4a",
+    treeLeaves: "#2ecc71",
+    cloud: "#ffffff"
+};
+
+const backgroundElements = [
+    { x: 0, y: 150, type: 'cloud', speed: 0.1, color: COLORS.cloud, size: 40 },
+    { x: 200, y: 120, type: 'cloud', speed: 0.1, color: COLORS.cloud, size: 60 },
+    { x: 500, y: 180, type: 'cloud', speed: 0.1, color: COLORS.cloud, size: 30 },
+    { x: 100, y: 120, type: 'tree', speed: 0.2, trunkH: 50, color: COLORS.treeLeaves },
+    { x: 600, y: 100, type: 'tree', speed: 0.2, trunkH: 70, color: COLORS.treeLeaves }
+];
+
+function drawCloud(x, y, size) {
+    ctx.fillStyle = COLORS.cloud;
+    ctx.fillRect(x, y, size, size / 2);
+    ctx.fillRect(x + size * 0.2, y - size * 0.2, size * 0.6, size * 0.4);
+}
+
+// Draw a detailed pixel palm tree
+function drawPalmTree(x, y, trunkH = 50) {
+    // Trunk
+    ctx.fillStyle = COLORS.treeTrunk;
+    ctx.fillRect(x, y, 10, trunkH);
+    
+    // Trunk detail (shadow/texture)
+    ctx.fillStyle = "#80603d";
+    ctx.fillRect(x + 1, y + 2, 8, 2);
+    ctx.fillRect(x + 1, y + 8, 8, 2);
+    ctx.fillRect(x + 1, y + 14, 8, 2);
+
+    // Leaves (More complex shape)
+    ctx.fillStyle = COLORS.treeLeaves;
+    
+    // Top spike
+    ctx.fillRect(x + 3, y - 25, 4, 15); 
+    
+    // Left leaf
+    ctx.beginPath();
+    ctx.moveTo(x + 5, y - 10);
+    ctx.lineTo(x - 15, y - 5);
+    ctx.lineTo(x, y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Right leaf
+    ctx.beginPath();
+    ctx.moveTo(x + 5, y - 10);
+    ctx.lineTo(x + 25, y - 5);
+    ctx.lineTo(x + 10, y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Center leaves
+    ctx.fillRect(x - 5, y - 15, 20, 5);
+}
+
+// ----------------------------
+// DRAW PLAYER
+// ----------------------------
+function drawPlayer() {
+    const { x, y, w, h } = player;
+    const currentStyle = PLAYER_RUN_SPRITES[currentRunFrame];
+    
+    // Body (Simplified for brevity, same as previous version)
+    ctx.fillStyle = currentStyle.shirt;
+    ctx.fillRect(x + 5, y, w - 10, h - 5); 
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(x + 5, y + h - 5, w - 10, 5);
+    ctx.fillStyle = "#333";
+    if (player.grounded && !player.ducking) {
+        if (currentRunFrame === 0) {
+            ctx.fillRect(x + 10, y + h, 5, 5);
+            ctx.fillRect(x + 25, y + h, 5, 5);
+        } else {
+            ctx.fillRect(x + 5, y + h, 5, 5);
+            ctx.fillRect(x + 30, y + h, 5, 5);
+        }
+    } else if (!player.grounded) {
+        ctx.fillRect(x + 10, y + h, 5, 5);
+        ctx.fillRect(x + 25, y + h, 5, 5);
+    }
+    
+    // Head 
+    ctx.fillStyle = "#d4a373";
+    ctx.fillRect(x + 8, y - 18, 24, 18);
+
+    // Hat 
+    ctx.fillStyle = currentStyle.hat;
+    ctx.fillRect(x + 5, y - 22, 30, 6); 
+    ctx.fillRect(x + 2, y - 18, 36, 3); 
+
+    // Sunglasses 
+    ctx.fillStyle = "#111";
+    ctx.fillRect(x + 10, y - 14, 8, 5);
+    ctx.fillRect(x + 22, y - 14, 8, 5);
+}
+
+// ----------------------------
+// OBSTACLE THEMED DRAWING
+// ----------------------------
+function drawObstacle(obstacle) {
+    if (obstacle.type === 1) { // Tall Plant
+        ctx.fillStyle = COLORS.treeTrunk;
+        ctx.fillRect(obstacle.x, obstacle.y, 10, obstacle.h);
+        ctx.fillStyle = COLORS.treeLeaves;
+        ctx.fillRect(obstacle.x - 5, obstacle.y - 10, 20, 10);
+    } 
+    else if (obstacle.type === 2) { // Beach Ball
+        const radius = obstacle.w / 2;
+        ctx.beginPath();
+        ctx.arc(obstacle.x + radius, obstacle.y + radius, radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#ff4081'; 
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+}
+
+function spawnObstacle() {
+    const type = Math.floor(Math.random() * 2) + 1;
+    let obs = { x: CANVAS_W + 10, w: 30 };
+
+    if (type === 1) { 
+        obs.h = 50 + Math.floor(Math.random() * 20);
+        obs.y = GROUND_Y - obs.h;
+        obs.type = 1;
+    } else if (type === 2) { 
+        obs.w = 20;
+        obs.h = 20;
+        obs.y = GROUND_Y - obs.h;
+        obs.type = 2;
+    }
+    obstacles.push(obs);
+}
+
+// ----------------------------
+// COLLISION (same as previous)
+// ----------------------------
+function colliding(a, b) {
+    const playerHitbox = {
+        x: a.x + 5,
+        y: a.y + 5,
+        w: a.w - 10,
+        h: a.h - 5
+    };
+    
+    return (
+        playerHitbox.x < b.x + b.w &&
+        playerHitbox.x + playerHitbox.w > b.x &&
+        playerHitbox.y < b.y + b.h &&
+        playerHitbox.y + playerHitbox.h > b.y
+    );
+}
+
+// ----------------------------
+// UPDATE LOGIC
+// ----------------------------
+function update() {
+    // --- Player Movement (same as previous) ---
+    const wantsJump = keys["ArrowUp"] || keys["Space"];
+    const wantsDuck = keys["ArrowDown"];
+
+    if (wantsDuck && player.grounded) {
+        player.ducking = true;
+        player.h = PLAYER_DUCK.h;
+        player.w = PLAYER_DUCK.w;
+        player.y = GROUND_Y - player.h;
+    } else {
+        if (player.ducking) {
+            player.h = PLAYER_STAND.h;
+            player.w = PLAYER_STAND.w;
+            player.y = GROUND_Y - player.h;
+        }
+        player.ducking = false;
+    }
+
+    if (wantsJump && player.grounded && !player.ducking) {
+        player.vy = player.jumpForce;
+        player.grounded = false;
+    }
+
+    player.vy += player.gravity;
+    player.y += player.vy;
+
+    if (player.y + player.h >= GROUND_Y) {
+        player.y = GROUND_Y - player.h;
+        player.vy = 0;
+        player.grounded = true;
+    }
+
+    // --- Obstacle Logic ---
+    obstacles.forEach(o => o.x -= speed);
+    obstacles = obstacles.filter(o => o.x + o.w > 0);
+
+    // NEW Difficulty Logic: Shorter Spacing & Double Obstacles
+    obstacleTimer -= 1;
+    if (obstacleTimer <= 0) {
+        spawnObstacle();
+
+        // Check for a double obstacle (starts after score > 500)
+        // 1 in 10 chance, increasing to 1 in 5 chance at max difficulty
+        const maxScoreForDifficulty = 5000;
+        const difficultyRatio = Math.min(1, score / maxScoreForDifficulty); // 0 to 1
+        
+        if (Math.random() < 0.1 + difficultyRatio * 0.1) {
+            nextDouble = true;
+            obstacleTimer = 20; // Short gap (20 frames) for the second obstacle
+        } else {
+            nextDouble = false;
+            // Base delay: 90 frames MIN, reducing to 40 frames MIN at max difficulty
+            let minDelay = 90 - (difficultyRatio * 50); 
+            // Max delay: 150 frames MAX, reducing to 70 frames MAX at max difficulty
+            let maxDelay = 150 - (difficultyRatio * 80); 
+            obstacleTimer = minDelay + Math.random() * (maxDelay - minDelay);
+        }
+    } else if (nextDouble && obstacleTimer <= 0) {
+        // If the flag is set, spawn the second obstacle immediately after the short gap
+        spawnObstacle();
+        nextDouble = false;
+        // Reset timer to a new random long interval
+        const maxScoreForDifficulty = 5000;
+        const difficultyRatio = Math.min(1, score / maxScoreForDifficulty); 
+        let minDelay = 90 - (difficultyRatio * 50); 
+        let maxDelay = 150 - (difficultyRatio * 80); 
+        obstacleTimer = minDelay + Math.random() * (maxDelay - minDelay);
+    }
+    
+
+    // --- Game State Update ---
+    // Speed increase rate (remains the same)
+    speed += 0.001; 
+
+    // Collision check
+    obstacles.forEach(o => {
+        if (colliding(player, o)) endGame();
+    });
+
+    // Score & High Score
+    score++;
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("bb_highscore", highScore);
+    }
+    
+    // Running animation frame
+    player.frameCounter++;
+    if (player.grounded && !player.ducking && player.frameCounter % 8 === 0) {
+        currentRunFrame = (currentRunFrame + 1) % PLAYER_RUN_SPRITES.length;
+    }
+}
+
+// ----------------------------
+// DRAW EVERYTHING (same as previous)
+// ----------------------------
+function draw() {
+    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+    // Sky
+    ctx.fillStyle = COLORS.sky;
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+    // Water/Ocean
+    ctx.fillStyle = COLORS.water;
+    ctx.fillRect(0, CANVAS_H - 100, CANVAS_W, 80);
+    ctx.fillStyle = "#87d3ff"; 
+    for(let i=0; i < CANVAS_W / 5; i++) {
+        let waveX = (i * 20 + score * 0.05) % CANVAS_W;
+        ctx.fillRect(waveX, CANVAS_H - 100, 5, 2);
+    }
+
+    // Draw Parallax Elements
+    for (const el of backgroundElements) {
+        el.x -= speed * el.speed;
+        if (el.x + 50 < 0) {
+            el.x = CANVAS_W + Math.random() * 100;
+            if (el.type === 'tree') {
+                el.trunkH = 50 + Math.floor(Math.random() * 20);
+            }
+        }
+        
+        if (el.type === 'tree') {
+            drawPalmTree(el.x, el.y, el.trunkH);
+        } else if (el.type === 'cloud') {
+            drawCloud(el.x, el.y, el.size);
+        }
+    }
+
+    // FOREGROUND SAND
+    ctx.fillStyle = COLORS.sand;
+    ctx.fillRect(0, CANVAS_H - 20, CANVAS_W, 20);
+    ctx.fillStyle = "#d4a373";
+    for(let i = 0; i < CANVAS_W; i += 5) {
+        ctx.fillRect(i, CANVAS_H - 18 + (i % 2), 1, 1);
+    }
+
+    // PLAYER & OBSTACLES
+    obstacles.forEach(drawObstacle);
+    drawPlayer();
+
+    // SCORE
+    document.getElementById("scoreDisplay").innerHTML = 
+        `SCORE: ${Math.floor(score / 10)}<br>HIGH: ${Math.floor(highScore / 10)}`;
+}
+
+// ----------------------------
+// INPUT (same as previous)
+// ----------------------------
+let keys = {};
+document.addEventListener("keydown", (e) => {
+    keys[e.code] = true;
+    if (e.code === "Space" && gameRunning === false) {
+        startGame(); 
+    }
+});
+document.addEventListener("keyup",   (e) => keys[e.code] = false);
+
+// ----------------------------
+// GAME LOOP (same as previous)
+// ----------------------------
+function gameLoop() {
+    if (gameRunning) {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+}
+
+// ----------------------------
+// START / END (updated score attachment)
+// ----------------------------
+function startGame() {
+    gameRunning = true;
+    score = 0;
+    speed = 6;
+    obstacles = [];
+    player.y = GROUND_Y - PLAYER_STAND.h;
+    player.vy = 0;
+    
+    document.getElementById("startScreen").style.display = "none";
+    
+    if (!document.getElementById("scoreDisplay")) {
+        const scoreDiv = document.createElement("div");
+        scoreDiv.id = "scoreDisplay";
+        // Attach to gameContainer
+        document.getElementById("gameContainer").appendChild(scoreDiv); 
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+function endGame() {
+    gameRunning = false;
+    const startScreen = document.getElementById("startScreen");
+    startScreen.querySelector('h1').textContent = "¡GAME OVER!";
+    startScreen.querySelector('div').innerHTML = 
+        `Your final score was ${Math.floor(score / 10)}!<br>
+        The high score is ${Math.floor(highScore / 10)}.<br>
+        <br>Press Start to run again!`;
+    document.getElementById("startButton").textContent = "¡Volver a Empezar!";
+    startScreen.style.display = "flex";
+}
+
+// ----------------------------
+// START BUTTON (same as previous)
+// ----------------------------
+document.getElementById("startButton").addEventListener("click", startGame);
+
+// Initialize the game view to show the high score before starting
+document.addEventListener('DOMContentLoaded', () => {
+    // Show the initial high score on the start screen
+    const infoDiv = document.getElementById("startScreen").querySelector('div');
+    infoDiv.innerHTML = 
+        `Run as long as you can while dodging the obstacles! 
+        <br>Use UP ARROW or SPACE to jump. 
+        <br>Use DOWN ARROW to duck.
+        <br><br>Current High Score: ${Math.floor(highScore / 10)}<br><br>¡Suerte!`;
+});
+
+</script>
+</body>
+</html>
