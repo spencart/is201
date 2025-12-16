@@ -85,3 +85,27 @@ blockquote {
 .my-4 { 
     border-top: 1px solid #cccccc; /* Slightly darker than the border above */
 }
+/* --- Responsive Video Fix to Make the YouTube Player Bigger --- */
+
+.video-container {
+    /* Required for the absolute positioning of the iframe */
+    position: relative;
+    width: 100%;
+    /* Sets the height based on 56.25% of the width (16:9 aspect ratio) */
+    padding-bottom: 56.25%; 
+    height: 0;
+    overflow: hidden;
+    
+    /* Optional: Sets a maximum size for the video container */
+    max-width: 800px; 
+    margin: 0 auto; 
+}
+
+.video-container iframe {
+    /* Forces the iframe to fill the entire space created by the wrapper */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+}
